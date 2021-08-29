@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
 import Image from "next/image";
 import Layout from "@/components/Layout";
-import MyPokemonList from "@/components/MyPokemonList";
 import NextLink from "next/link";
 import PokemonList from "@/components/PokemonList";
 import { Box, Flex, Heading, Link, SimpleGrid, VStack } from "@chakra-ui/react";
@@ -14,6 +13,7 @@ import usePokemonList from "@/lib/hooks/PokemonList";
 import { DBNAME, DBVERSION } from "@/config";
 
 const Home = (props: any) => {
+  const [myPokemonList, setMyPokemonList] = useState([]);
   const isMobile = useMobileView();
   const { data, error, loading } = usePokemonList(8, 0);
   const pokemonList = usePokemonList(24, 0);
@@ -62,6 +62,8 @@ const Home = (props: any) => {
         <Heading as="h2" fontSize="xl">
           My pokemon list
         </Heading>
+        {myPokemonList.length > 0 ? (
+          <>
         <NextLink href="/my-pokemon">
           <Link fontSize="sm" marginBottom={2} textAlign="right">
             View all
@@ -71,8 +73,12 @@ const Home = (props: any) => {
           justifyItems="center"
           templateColumns="repeat(auto-fill, minmax(140px, 1fr))"
         >
-          <PokemonList color={props.color} list={data.pokemons.results} />
+          <PokemonList color={props.color} list={myPokemonList} update={setMyPokemonList} />
         </SimpleGrid>
+          </>
+            )
+        :
+          <Box> You don't have any pokemon yet </Box>}
       </Flex>
       <Flex
         border="1px solid black"
@@ -97,6 +103,7 @@ const Home = (props: any) => {
             color={props.color}
             isWild={true}
             list={pokemonList.data.pokemons.results}
+            update={setMyPokemonList}
           />
         </SimpleGrid>
       </Flex>

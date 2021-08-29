@@ -10,9 +10,11 @@ import type { ColorProps, Pokemon } from "@/config";
 
 interface PropTypes {
   data: any;
-  name: string;
   image: string;
   isWild?: boolean;
+  name: string;
+  state: boolean;
+  update: any;
 }
 
 const PokemonList = (props: ColorProps & PropTypes) => {
@@ -28,7 +30,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     name: ""
   });
 
-  const insertPokemon = (new_pokemon) => {
+  const catchPokemon = (new_pokemon) => {
     const idb = window.indexedDB.open(DBNAME, DBVERSION);
     idb.onerror = (event) => {
       console.error("Failed to initDB", event.target.error);
@@ -41,9 +43,24 @@ const PokemonList = (props: ColorProps & PropTypes) => {
       };
       let store = transaction.objectStore("pokemon");
       store.add({ id: crypto.randomUUID(), ...new_pokemon });
-      store.getAll().onsuccess = (event) => {
-        props.update(event.target.result);
-      }
+      props.update(!props.state);
+    };
+  };
+
+  const releasePokemon = (pokemonID) => {
+    const idb = window.indexedDB.open(DBNAME, DBVERSION);
+    idb.onerror = (event) => {
+      console.error("Failed to initDB", event.target.error);
+    };
+    idb.onsuccess = (event) => {
+      const db = event.target.result;
+      let transaction = db.transaction("pokemon", "readwrite");
+      transaction.onerror = (event:any) => {
+        console.error("Error transaction", event.target);
+      };
+      let store = transaction.objectStore("pokemon");
+      store.delete(pokemonID);
+      props.update(!props.state);
     };
   };
 
@@ -100,7 +117,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
               background={props.color.contrast.color}
               color={props.color.contrast.inverted}
               onClick={() =>
-                insertPokemon({ image: props.image, name: props.name })
+                catchPokemon({ dreamworld: props.image, name: props.name })
               }
               size="sm"
             >
@@ -108,10 +125,12 @@ const PokemonList = (props: ColorProps & PropTypes) => {
             </Button>
           </>
         ) : (
+          <>
           <Button
             _hover={{ background: props.color.contrast.hover }}
             background={props.color.contrast.color}
             color={props.color.contrast.inverted}
+            marginBottom={2}
             onClick={() => {
               onOpen();
               setPokemon({
@@ -124,6 +143,26 @@ const PokemonList = (props: ColorProps & PropTypes) => {
           >
             View details
           </Button>
+          <Button
+            _hover={{
+              background: props.color.background,
+              textDecoration: "underline"
+            }}
+            background={props.color.contrast.inverted}
+            border="1.5px solid"
+            borderColor={props.color.contrast.color}
+            color={props.color.contrast.color}
+            marginBottom={2}
+            onClick={() => {
+              releasePokemon(props.data.id);
+            }}
+            padding={1}
+            size="sm"
+            variant="link"
+          >
+            Release
+          </Button>
+          </>
         )}
       </Container>
 

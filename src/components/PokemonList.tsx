@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import Image from "next/image";
-import PokemonCard from "@/components/PokemonCard";
-import PokemonDetail from "@/components/PokemonDetail";
 import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  useDisclosure
+  Box
 } from "@chakra-ui/react";
+import PokemonCard from "@/components/PokemonCard";
 
 import usePokemonDetail from "@/lib/hooks/PokemonDetail";
 
@@ -25,10 +19,10 @@ type PokemonList = {
 interface PropTypes {
   isWild?: boolean;
   list: PokemonList[];
+  update: any;
 }
 
 const PokemonList = (props: ColorProps & PropTypes) => {
-  const [pokemonList, setPokemonList] = useState([]);
   const [update, setUpdate] = useState(false);
 
   useEffect(() => {
@@ -45,68 +39,70 @@ const PokemonList = (props: ColorProps & PropTypes) => {
       let store = transaction.objectStore("pokemon");
       store.getAll().onsuccess = (event) => {
         const pokemon = event.target.result;
-        pokemon.length !== pokemonList.length ? setPokemonList(pokemon) : {};
+        props.update(pokemon);
+        console.log("UPDATE!", pokemon);
       };
     };
-  }, [pokemonList]);
-
+  },[update]);
+  
   let query_detail = { query: "" };
+  
+  let data: any;
+  let error: any;
+  let loading: any;
 
-  props.list.forEach((value: any) => {
-    query_detail.query += `
-    ${value.name}: pokemon(name: "${value.name}") {
-      abilities {
-        ability {
-          name
+  if (props.list.length > 0) {
+    props.list.forEach((value: any) => {
+      query_detail.query += `
+      ${value.name}: pokemon(name: "${value.name}") {
+        abilities {
+          ability {
+            name
+          }
         }
-      }
-      height
-      moves {
-        move {
-          name
+        height
+        moves {
+          move {
+            name
+          }
         }
-      }
-      types {
-        type {
-          name
+        types {
+          type {
+            name
+          }
         }
+        weight
       }
-      weight
-    }
-    `;
-  });
+      `;
+    });
 
-  const { data, error, loading } = usePokemonDetail(query_detail);
+    const detail = usePokemonDetail(query_detail);
+    data = detail.data;
+    error = detail.error;
+    loading = detail.loading;
+  }
 
   if (loading) return <Box>"Loading..."</Box>;
   if (error) return <Box>Error! {error.message}</Box>;
 
-  return props.isWild ? (
-    props.list.map((val: any, index: number) => (
+  return props.list.map((val: any, index: number) => {
+    let pokemon_data = {
+      id: props.isWild ? index : val.id,
+      ...data[val.name]
+    }
+    return(
       <PokemonCard
         color={props.color}
-        data={data[val.name]}
+        data={pokemon_data}
         image={val.dreamworld}
-        isWild
+        isWild={props.isWild}
         key={`${val.name}-${index}`}
         name={val.name}
         state={update}
-        update={setPokemonList}
+        update={setUpdate}
       />
-    ))
-  ) : pokemonList.length > 0 ? (
-    pokemonList.map((val: any, index: number) => (
-      <PokemonCard
-        color={props.color}
-        data={data[val.name]}
-        image={val.image}
-        key={`${val.name}-${index}`}
-        name={val.name}
-      />
-    ))
-  ) : (
-    <Box> nothing </Box>
-  );
+    );
+    });
 };
 
 export default PokemonList;
