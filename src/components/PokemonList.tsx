@@ -39,9 +39,6 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     idb.onsuccess = (event) => {
       const db = event.target.result;
       let transaction = db.transaction("pokemon", "readwrite");
-      transaction.oncomplete = () => {
-        console.log("Transaction done!");
-      };
       transaction.onerror = (event) => {
         console.error("Error transaction", event.target);
       };
@@ -51,7 +48,6 @@ const PokemonList = (props: ColorProps & PropTypes) => {
         pokemon.length !== pokemonList.length ? setPokemonList(pokemon) : {};
       };
     };
-    console.log("pokemon list", pokemonList);
   }, [pokemonList]);
 
   let query_detail = { query: "" };

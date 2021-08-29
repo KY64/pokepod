@@ -36,9 +36,6 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     idb.onsuccess = (event) => {
       const db = event.target.result;
       let transaction = db.transaction("pokemon", "readwrite");
-      transaction.oncomplete = () => {
-        console.log("Transaction done!");
-      };
       transaction.onerror = (event) => {
         console.error("Error transaction", event.target);
       };
@@ -46,8 +43,6 @@ const PokemonList = (props: ColorProps & PropTypes) => {
       store.add({ id: crypto.randomUUID(), ...new_pokemon });
       store.getAll().onsuccess = (event) => {
         props.update(event.target.result);
-        console.log("updated pokemon", event.target.result);
-        console.log("state", props.state);
       }
     };
   };
