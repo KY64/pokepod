@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  Box
-} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import PokemonCard from "@/components/PokemonCard";
 
 import usePokemonDetail from "@/lib/hooks/PokemonDetail";
@@ -43,10 +41,10 @@ const PokemonList = (props: ColorProps & PropTypes) => {
         console.log("UPDATE!", pokemon);
       };
     };
-  },[update]);
-  
+  }, [update]);
+
   let query_detail = { query: "" };
-  
+
   let data: any;
   let error: any;
   let loading: any;
@@ -89,8 +87,8 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     let pokemon_data = {
       id: props.isWild ? index : val.id,
       ...data[val.name]
-    }
-    return(
+    };
+    return (
       <PokemonCard
         color={props.color}
         data={pokemon_data}
@@ -102,7 +100,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
         update={setUpdate}
       />
     );
-    });
+  });
 };
 
 export default PokemonList;

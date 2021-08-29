@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import Image from "next/image";
 import PokemonDetail from "@/components/PokemonDetail";
+import PromptCatchingPokemon from "@/components/PromptCatchingPokemon";
 import { Button, Container, Heading, useDisclosure } from "@chakra-ui/react";
 
 import { DBNAME, DBVERSION } from "@/config";
@@ -24,29 +25,16 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     onClose: onCloseWildPokemon,
     onOpen: onOpenWildPokemon
   } = useDisclosure();
+  const {
+    isOpen: isOpenCatchPokemon,
+    onClose: onCloseCatchPokemon,
+    onOpen: onOpenCatchPokemon
+  } = useDisclosure();
   const [pokemon, setPokemon] = useState<Pokemon>({
     data: {},
     image: "",
     name: ""
   });
-
-  const catchPokemon = (new_pokemon) => {
-    const idb = window.indexedDB.open(DBNAME, DBVERSION);
-    idb.onerror = (event) => {
-      console.error("Failed to initDB", event.target.error);
-    };
-    idb.onsuccess = (event) => {
-      const db = event.target.result;
-      let transaction = db.transaction("pokemon", "readwrite");
-      transaction.onerror = (event) => {
-        console.error("Error transaction", event.target);
-      };
-      let store = transaction.objectStore("pokemon");
-      let randint = new Uint32Array(1);
-      store.add({ id: window.crypto.getRandomValues(randint)[0], ...new_pokemon });
-      props.update(!props.state);
-    };
-  };
 
   const releasePokemon = (pokemonID) => {
     const idb = window.indexedDB.open(DBNAME, DBVERSION);
@@ -56,7 +44,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     idb.onsuccess = (event) => {
       const db = event.target.result;
       let transaction = db.transaction("pokemon", "readwrite");
-      transaction.onerror = (event:any) => {
+      transaction.onerror = (event: any) => {
         console.error("Error transaction", event.target);
       };
       let store = transaction.objectStore("pokemon");
@@ -117,9 +105,14 @@ const PokemonList = (props: ColorProps & PropTypes) => {
               _hover={{ background: props.color.contrast.hover }}
               background={props.color.contrast.color}
               color={props.color.contrast.inverted}
-              onClick={() =>
-                catchPokemon({ dreamworld: props.image, name: props.name })
-              }
+              onClick={() => {
+                onOpenCatchPokemon();
+                setPokemon({
+                  data: props.data,
+                  image: props.image,
+                  name: props.name
+                });
+              }}
               size="sm"
             >
               Catch pokemon
@@ -127,62 +120,72 @@ const PokemonList = (props: ColorProps & PropTypes) => {
           </>
         ) : (
           <>
-          <Button
-            _hover={{ background: props.color.contrast.hover }}
-            background={props.color.contrast.color}
-            color={props.color.contrast.inverted}
-            marginBottom={2}
-            onClick={() => {
-              onOpen();
-              setPokemon({
-                data: props.data,
-                image: props.image,
-                name: props.name
-              });
-            }}
-            size="sm"
-          >
-            View details
-          </Button>
-          <Button
-            _hover={{
-              background: props.color.background,
-              textDecoration: "underline"
-            }}
-            background={props.color.contrast.inverted}
-            border="1.5px solid"
-            borderColor={props.color.contrast.color}
-            color={props.color.contrast.color}
-            marginBottom={2}
-            onClick={() => {
-              releasePokemon(props.data.id);
-            }}
-            padding={1}
-            size="sm"
-            variant="link"
-          >
-            Release
-          </Button>
+            <Button
+              _hover={{ background: props.color.contrast.hover }}
+              background={props.color.contrast.color}
+              color={props.color.contrast.inverted}
+              marginBottom={2}
+              onClick={() => {
+                onOpen();
+                setPokemon({
+                  data: props.data,
+                  image: props.image,
+                  name: props.name
+                });
+              }}
+              size="sm"
+            >
+              View details
+            </Button>
+            <Button
+              _hover={{
+                background: props.color.background,
+                textDecoration: "underline"
+              }}
+              background={props.color.contrast.inverted}
+              border="1.5px solid"
+              borderColor={props.color.contrast.color}
+              color={props.color.contrast.color}
+              marginBottom={2}
+              onClick={() => {
+                releasePokemon(props.data.id);
+              }}
+              padding={1}
+              size="sm"
+              variant="link"
+            >
+              Release
+            </Button>
           </>
         )}
       </Container>
 
-      {/* My Pokemon Modal */}
-      <PokemonDetail
-        color={props.color}
-        isOpen={isOpen}
-        onClose={onClose}
-        pokemon={pokemon}
-      />
-
-      {/* Wild Pokemon Modal */}
-      <PokemonDetail
-        color={props.color}
-        isOpen={isOpenWildPokemon}
-        isWild
-        onClose={onCloseWildPokemon}
-        pokemon={pokemon}
-      />
+      {props.isWild ? (
+        <>
+          <PokemonDetail
+            color={props.color}
+            isOpen={isOpenWildPokemon}
+            isWild
+            onClose={onCloseWildPokemon}
+            pokemon={pokemon}
+          />
+          <PromptCatchingPokemon
+            color={props.color}
+            isOpen={isOpenCatchPokemon}
+            onClose={onCloseCatchPokemon}
+            pokemon={pokemon}
+            state={props.state}
+            update={props.update}
+          />
+        </>
+      ) : (
+        <PokemonDetail
+          color={props.color}
+          isOpen={isOpen}
+          onClose={onClose}
+          pokemon={pokemon}
+        />
+      )}
     </>
   );
 };
