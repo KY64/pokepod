@@ -7,7 +7,7 @@ import usePokemonDetail from "@/lib/hooks/PokemonDetail";
 
 import { DBNAME, DBVERSION } from "@/config";
 
-import type { ColorProps, Pokemon } from "@/config";
+import type { ColorProps, DOMEvent } from "@/config";
 
 type PokemonList = {
   dreamworld: string;
@@ -25,33 +25,27 @@ const PokemonList = (props: ColorProps & PropTypes) => {
 
   useEffect(() => {
     const idb = window.indexedDB.open(DBNAME, DBVERSION);
-    idb.onerror = (event) => {
+    idb.onerror = (event: DOMEvent) => {
       console.error("Failed to initDB", event.target.error);
     };
-    idb.onsuccess = (event) => {
+    idb.onsuccess = (event: DOMEvent) => {
       const db = event.target.result;
       let transaction = db.transaction("pokemon", "readwrite");
-      transaction.onerror = (event) => {
+      transaction.onerror = (event: DOMEvent) => {
         console.error("Error transaction", event.target);
       };
       let store = transaction.objectStore("pokemon");
-      store.getAll().onsuccess = (event) => {
+      store.getAll().onsuccess = (event: DOMEvent) => {
         const pokemon = event.target.result;
         props.update(pokemon);
-        console.log("UPDATE!", pokemon);
       };
     };
   }, [update]);
 
   let query_detail = { query: "" };
 
-  let data: any;
-  let error: any;
-  let loading: any;
-
-  if (props.list.length > 0) {
-    props.list.forEach((value: any) => {
-      query_detail.query += `
+  props.list.forEach((value: any) => {
+    query_detail.query += `
       ${value.name}: pokemon(name: "${value.name}") {
         abilities {
           ability {
@@ -72,35 +66,35 @@ const PokemonList = (props: ColorProps & PropTypes) => {
         weight
       }
       `;
-    });
+  });
 
-    const detail = usePokemonDetail(query_detail);
-    data = detail.data;
-    error = detail.error;
-    loading = detail.loading;
-  }
+  const { data, error, loading } = usePokemonDetail(query_detail);
 
   if (loading) return <Box>"Loading..."</Box>;
   if (error) return <Box>Error! {error.message}</Box>;
 
-  return props.list.map((val: any, index: number) => {
-    let pokemon_data = {
-      id: props.isWild ? index : val.id,
-      ...data[val.name]
-    };
-    return (
-      <PokemonCard
-        color={props.color}
-        data={pokemon_data}
-        image={val.dreamworld}
-        isWild={props.isWild}
-        key={`${val.name}-${index}`}
-        name={val.name}
-        state={update}
-        update={setUpdate}
-      />
-    );
-  });
+  return (
+    <>
+      {props.list.map((val: any, index: number) => {
+        let pokemon_data = {
+          id: props.isWild ? index : val.id,
+          ...data[val.name]
+        };
+        return (
+          <PokemonCard
+            color={props.color}
+            data={pokemon_data}
+            image={val.dreamworld}
+            isWild={props.isWild}
+            key={`${val.name}-${index}`}
+            name={val.name}
+            state={update}
+            update={setUpdate}
+          />
+        );
+      })}
+    </>
+  );
 };
 
 export default PokemonList;

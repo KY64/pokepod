@@ -15,19 +15,12 @@ import {
   ModalHeader,
   ModalOverlay,
   SimpleGrid,
-  Text,
-  Tooltip
+  Text
 } from "@chakra-ui/react";
 
 import { getElementImage } from "@/lib/utils";
 
 import type { ColorProps, Pokemon } from "@/config";
-
-interface ElementList {
-  type: {
-    name: string;
-  };
-}
 
 interface PropTypes {
   isOpen: boolean;
@@ -35,22 +28,6 @@ interface PropTypes {
   onClose: () => void;
   pokemon: Pokemon;
 }
-
-const queryElement = (data: ElementList[]): string => {
-  let element: string = "";
-  if (data.length > 1) {
-    data.forEach((val: any, index: number) => {
-      if (index === data.length - 1) {
-        element += val.type.name;
-      } else {
-        element += `${val.type.name}, `;
-      }
-    });
-    return element;
-  }
-
-  return data[0].type.name;
-};
 
 const Desktop = (props: ColorProps & PropTypes) => (
   <>

@@ -7,7 +7,7 @@ import { Button, Container, Heading, useDisclosure } from "@chakra-ui/react";
 
 import { DBNAME, DBVERSION } from "@/config";
 
-import type { ColorProps, Pokemon } from "@/config";
+import type { ColorProps, DOMEvent, Pokemon } from "@/config";
 
 interface PropTypes {
   data: any;
@@ -36,12 +36,12 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     name: ""
   });
 
-  const releasePokemon = (pokemonID) => {
+  const releasePokemon = (pokemonID: string) => {
     const idb = window.indexedDB.open(DBNAME, DBVERSION);
-    idb.onerror = (event) => {
+    idb.onerror = (event: DOMEvent) => {
       console.error("Failed to initDB", event.target.error);
     };
-    idb.onsuccess = (event) => {
+    idb.onsuccess = (event: DOMEvent) => {
       const db = event.target.result;
       let transaction = db.transaction("pokemon", "readwrite");
       transaction.onerror = (event: any) => {
