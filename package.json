@@ -1,0 +1,49 @@
+{
+  "author": "Excel <exceldaris@tuta.io>",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "postinstall": "husky install",
+    "dev": "next dev",
+    "ts": "tsc --noEmit --incremental",
+    "format": "prettier --write src/**/*.[jt]s?\\(x\\)",
+    "lint": "npm run ts && next lint && prettier -c src/**/*.[jt]s?\\(x\\)",
+    "lint:fix": "npm run format && eslint --fix \"src/**/*.{js,ts,tsx}\"",
+    "lint-staged": "lint-staged",
+    "build": "npm run lint:fix && rm -rf .next && next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.4.10",
+    "@chakra-ui/react": "^1.6.6",
+    "@chakra-ui/theme-tools": "^1.1.9",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "framer-motion": "^4",
+    "graphql": "^15.5.1",
+    "next": "canary",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "swr": "^0.5.7",
+    "typeface-open-sans": "^1.1.13"
+  },
+  "devDependencies": {
+    "@axe-core/react": "^4.2.2",
+    "@next/eslint-plugin-next": "canary",
+    "@types/node": "^16.7.4",
+    "@types/react": "^17.0.17",
+    "@typescript-eslint/parser": "^4.29.1",
+    "eslint": "7.32.0",
+    "eslint-config-next": "canary",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-react": "^7.24.0",
+    "events": "^3.3.0",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "2.3.2",
+    "string_decoder": "^1.3.0",
+    "typescript": "^4.4.2"
+  }
+}

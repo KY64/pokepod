@@ -1,0 +1,29 @@
+{
+  "extends": ["prettier", "plugin:@next/next/core-web-vitals"],
+  "plugins": ["@next/next", "react"],
+  "rules": {
+    "eqeqeq": "error",
+    "jsx-quotes": ["error", "prefer-double"],
+    "no-console": ["error", { "allow": ["error"] }],
+    "quotes": ["error", "double"],
+    "react/jsx-sort-props": "warn",
+    "semi": ["error", "always"],
+    "sort-keys": ["warn", "asc"],
+    "sort-imports": [
+      "warn",
+      {
+        "allowSeparatedGroups": true,
+        "memberSyntaxSortOrder": ["single", "multiple", "all", "none"]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts?(x)"],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      }
+    }
+  ]
+}
