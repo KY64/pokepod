@@ -34,7 +34,6 @@ interface PropTypes {
   isWild?: boolean;
   onClose: () => void;
   pokemon: Pokemon;
-  query: string;
 }
 
 const queryElement = (data: ElementList[]): string => {

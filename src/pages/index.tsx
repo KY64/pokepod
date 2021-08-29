@@ -64,21 +64,25 @@ const Home = (props: any) => {
         </Heading>
         {myPokemonList.length > 0 ? (
           <>
-        <NextLink href="/my-pokemon">
-          <Link fontSize="sm" marginBottom={2} textAlign="right">
-            View all
-          </Link>
-        </NextLink>
-        <SimpleGrid
-          justifyItems="center"
-          templateColumns="repeat(auto-fill, minmax(140px, 1fr))"
-        >
-          <PokemonList color={props.color} list={myPokemonList} update={setMyPokemonList} />
-        </SimpleGrid>
+            <NextLink href="/my-pokemon">
+              <Link fontSize="sm" marginBottom={2} textAlign="right">
+                View all
+              </Link>
+            </NextLink>
+            <SimpleGrid
+              justifyItems="center"
+              templateColumns="repeat(auto-fill, minmax(140px, 1fr))"
+            >
+              <PokemonList
+                color={props.color}
+                list={myPokemonList}
+                update={setMyPokemonList}
+              />
+            </SimpleGrid>
           </>
-            )
-        :
-          <Box> You don't have any pokemon yet </Box>}
+        ) : (
+          <Box> You don't have any pokemon yet </Box>
+        )}
       </Flex>
       <Flex
         border="1px solid black"
