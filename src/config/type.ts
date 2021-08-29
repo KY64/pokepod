@@ -25,6 +25,10 @@ export interface ColorProps {
   };
 }
 
+export type DOMEvent = {
+  target: any;
+};
+
 /* dreamworld key is the same as image key
  * since dreamworld is the return of
  * pokeAPI query using graphQL

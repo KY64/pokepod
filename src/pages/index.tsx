@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 
 import Head from "next/head";
-import Image from "next/image";
 import Layout from "@/components/Layout";
 import NextLink from "next/link";
 import PokemonList from "@/components/PokemonList";
-import { Box, Flex, Heading, Link, SimpleGrid, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, Link, SimpleGrid, Text } from "@chakra-ui/react";
 
 import useMobileView from "@/lib/hooks/MobileView";
 import usePokemonList from "@/lib/hooks/PokemonList";
 
 import { DBNAME, DBVERSION } from "@/config";
 
+import type { DOMEvent } from "@/config";
+
 const Home = (props: any) => {
   const [myPokemonList, setMyPokemonList] = useState([]);
   const isMobile = useMobileView();
-  const { data, error, loading } = usePokemonList(8, 0);
   const pokemonList = usePokemonList(24, 0);
 
   useEffect(() => {
@@ -26,13 +26,16 @@ const Home = (props: any) => {
     } else {
       try {
         const idb = window.indexedDB.open(DBNAME, DBVERSION);
-        idb.onerror = (event) => {
+        idb.onerror = (event: DOMEvent) => {
           console.error("Failed to initDB", event.target.error);
         };
-        idb.onupgradeneeded = (event) => {
+        idb.onupgradeneeded = (event: DOMEvent) => {
           const db = event.target.result;
-          db.createObjectStore("pokemon", {
+          const objectStore = db.createObjectStore("pokemon", {
             keyPath: "id"
+          });
+          objectStore.createIndex("nickname", "nickname", {
+            unique: true
           });
         };
       } catch (err) {
@@ -41,8 +44,7 @@ const Home = (props: any) => {
     }
   }, []);
 
-  if (loading || pokemonList.loading) return <Box>"Loading..."</Box>;
-  if (error) return <Box>Error! {error.message}</Box>;
+  if (pokemonList.loading) return <Box>"Loading..."</Box>;
   if (pokemonList.error) return <Box>Error! {pokemonList.error.message}</Box>;
 
   return (
@@ -50,15 +52,12 @@ const Home = (props: any) => {
       <Head>
         <title> PokePod </title>
       </Head>
-      <Box marginY={10}>
-        <VStack justifyContent="center" marginTop={isMobile ? 8 : 24}>
-          <Image height={110} src="https://picsum.photos/110" width={110} />
-          <Heading as="h4" fontSize="xl" fontWeight="light">
-            Username
-          </Heading>
-        </VStack>
-      </Box>
-      <Flex border="1px solid black" flexDirection="column" padding={5}>
+      <Flex
+        border="1px solid black"
+        flexDirection="column"
+        marginTop={isMobile ? 8 : 24}
+        padding={5}
+      >
         <Heading as="h2" fontSize="xl">
           My pokemon list
         </Heading>
@@ -81,7 +80,7 @@ const Home = (props: any) => {
             </SimpleGrid>
           </>
         ) : (
-          <Box> You don't have any pokemon yet </Box>
+          <Text textAlign="center"> You don't have any pokemon yet </Text>
         )}
       </Flex>
       <Flex

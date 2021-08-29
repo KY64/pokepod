@@ -40,10 +40,3 @@ export const initDB = (
     return 1;
   };
 };
-
-export const createIndex = (idb: IndexedDB) => {
-  idb.onsuccess = (event: IndexedDBEvent) => {
-    const db = event.target.result;
-    const objectStore = db.createObjectStore;
-  };
-};
