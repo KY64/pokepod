@@ -42,7 +42,8 @@ const PokemonList = (props: ColorProps & PropTypes) => {
         console.error("Error transaction", event.target);
       };
       let store = transaction.objectStore("pokemon");
-      store.add({ id: crypto.randomUUID(), ...new_pokemon });
+      let randint = new Uint32Array(1);
+      store.add({ id: window.crypto.getRandomValues(randint)[0], ...new_pokemon });
       props.update(!props.state);
     };
   };
