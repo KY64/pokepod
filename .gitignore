@@ -1,0 +1,29 @@
+# Folder
+.cache
+.next
+.vim
+.vscode
+.vercel
+.yarn/*
+build
+dist/
+node_modules
+t[e]?mp
+
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# File
+*.log
+*.sw*
+*.tmp
+.env*
+.eslintcache
+.pnp.*
+mockup/*.svg
+skip-*
+tsconfig.tsbuildinfo
+
+!.env.example
