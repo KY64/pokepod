@@ -11,6 +11,10 @@ import type { ColorProps } from "@/config/type";
 interface PropTypes {
   children: React.ReactNode;
   marginX?: number[];
+  navigation: {
+    name: string;
+    url: string;
+  };
 }
 
 /*
@@ -36,7 +40,7 @@ const Layout = (props: PropTypes) => {
   return (
     <>
       <header>
-        <Navbar {...color} />
+        <Navbar {...color} navigation={props.navigation} />
       </header>
       <chakra.main
         marginX={props.marginX ? props.marginX : [3, 16]}

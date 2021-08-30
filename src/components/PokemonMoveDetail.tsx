@@ -14,6 +14,12 @@ import {
 
 import { getElementImage } from "@/lib/utils";
 
+const getFlavourText = (move: any) => {
+  for (const text of move) {
+    if (text.language.name === "en") return text.flavor_text;
+  }
+};
+
 const PokemonMoveDetail = (props: any) => {
   return (
     <Popover isOpen>
@@ -32,7 +38,9 @@ const PokemonMoveDetail = (props: any) => {
             <Text marginLeft={1}>{props.move}</Text>
           </Flex>
         </PopoverHeader>
-        <PopoverBody>Are you sure you want to have that milkshake?</PopoverBody>
+        <PopoverBody>
+          {getFlavourText(props.detail.flavor_text_entries)}
+        </PopoverBody>
       </PopoverContent>
     </Popover>
   );

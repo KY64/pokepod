@@ -1,10 +1,6 @@
 module.exports = {
   images: {
-    domains: [
-      "cdn2.bulbagarden.net",
-      "picsum.photos",
-      "raw.githubusercontent.com"
-    ]
+    domains: ["cdn2.bulbagarden.net", "raw.githubusercontent.com"]
   },
   reactStrictMode: true
 };

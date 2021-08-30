@@ -87,7 +87,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
             image={val.dreamworld}
             isWild={props.isWild}
             key={`${val.name}-${index}`}
-            name={val.name}
+            name={props.isWild ? val.name : `${val.name}(${val.nickname})`}
             state={update}
             update={setUpdate}
           />

@@ -80,7 +80,7 @@ const PromptCatchingPokemon = (props: any) => {
         <ModalOverlay />
         <ModalContent marginTop={24}>
           <ModalHeader textTransform="capitalize">
-            {progress ? "Cathing pokemon. . ." : props.pokemon.name}
+            {progress ? "Catching pokemon. . ." : props.pokemon.name}
           </ModalHeader>
           {progress ? (
             <ModalBody marginY={6}>

@@ -168,6 +168,8 @@ const PokemonList = (props: ColorProps & PropTypes) => {
             isWild
             onClose={onCloseWildPokemon}
             pokemon={pokemon}
+            state={props.state}
+            update={props.update}
           />
           <PromptCatchingPokemon
             color={props.color}
