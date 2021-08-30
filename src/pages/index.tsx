@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import Head from "next/head";
+import Image from "next/image";
 import Layout from "@/components/Layout";
 import NextLink from "next/link";
-import PokemonList from "@/components/PokemonList";
-import { Box, Flex, Heading, Link, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
 
 import useMobileView from "@/lib/hooks/MobileView";
 import usePokemonList from "@/lib/hooks/PokemonList";
@@ -14,7 +14,6 @@ import { DBNAME, DBVERSION } from "@/config";
 import type { DOMEvent } from "@/config";
 
 const Home = (props: any) => {
-  const [myPokemonList, setMyPokemonList] = useState([]);
   const isMobile = useMobileView();
   const pokemonList = usePokemonList(24, 0);
 
@@ -50,82 +49,65 @@ const Home = (props: any) => {
   return (
     <>
       <Head>
-        <title> PokePod </title>
+        <title> Pokepod </title>
       </Head>
-      <Flex
-        border="1px solid black"
-        flexDirection="column"
-        marginTop={isMobile ? 8 : 24}
-        padding={5}
+      <SimpleGrid
+        columns={isMobile ? 1 : 2}
+        gap={5}
+        justifyItems="center"
+        marginTop={isMobile ? 4 : 28}
       >
-        <Heading as="h2" fontSize="xl">
-          My pokemon list
-        </Heading>
-        {myPokemonList.length > 0 ? (
-          <>
-            <NextLink href="/my-pokemon">
-              <Link fontSize="sm" marginBottom={2} textAlign="right">
-                View all
-              </Link>
-            </NextLink>
-            <SimpleGrid
-              justifyItems="center"
-              templateColumns="repeat(auto-fill, minmax(140px, 1fr))"
-            >
-              <PokemonList
-                color={props.color}
-                list={myPokemonList}
-                update={setMyPokemonList}
-              />
-            </SimpleGrid>
-          </>
-        ) : (
-          <Text textAlign="center"> You don't have any pokemon yet </Text>
-        )}
-      </Flex>
-      <Flex
-        border="1px solid black"
-        flexDirection="column"
-        marginTop={8}
-        padding={5}
-      >
-        <Heading as="h2" fontSize="xl" marginBottom={5}>
-          Pokemon in the wild
-        </Heading>
-        <NextLink href="/pokemon-list">
-          <Link fontSize="sm" marginBottom={2} textAlign="right">
-            View all
-          </Link>
+        <NextLink href="/wild-pokemon">
+          <Box
+            _hover={{
+              background: "white",
+              cursor: "pointer",
+              transition: ".4s"
+            }}
+            as="a"
+            background={props.color.background}
+            border="1px solid"
+            boxShadow="0 0 5px rgba( 0 0 0 / 40% )"
+            color={props.color.text.primary}
+            padding={16}
+            textAlign="center"
+            width="100%"
+          >
+            <Heading paddingY={isMobile ? 3 : 10}> Find Pokemon </Heading>
+            <Image height={200} src="/wild-pokemon.png" width={400} />
+          </Box>
         </NextLink>
-        <SimpleGrid
-          columns={6}
-          marginX={4}
-          templateColumns="repeat(auto-fill, minmax(140px, 1fr))"
-        >
-          <PokemonList
-            color={props.color}
-            isWild={true}
-            list={pokemonList.data.pokemons.results}
-            update={setMyPokemonList}
-          />
-        </SimpleGrid>
-      </Flex>
+        <NextLink href="my-pokemon">
+          <Box
+            _hover={{
+              background: "white",
+              cursor: "pointer",
+              transition: ".4s"
+            }}
+            as="a"
+            background={props.color.background}
+            border="1px solid"
+            boxShadow="0 0 5px rgba( 0 0 0 / 40% )"
+            color={props.color.text.primary}
+            padding={16}
+            textAlign="center"
+            width="100%"
+          >
+            <Heading paddingY={isMobile ? 3 : 10}>My Pokemon</Heading>
+            <Image height={150} src="/poke-ball.png" width={150} />
+          </Box>
+        </NextLink>
+      </SimpleGrid>
     </>
   );
 };
 
 const View = (props: any) => {
   return (
-    <Layout>
+    <Layout navigation={{ name: "/", url: "/" }}>
       <Home {...props} />
     </Layout>
   );
-};
-
-export const getStaticProps = async () => {
-  return {
-    props: {}
-  };
 };
 
 export default View;
