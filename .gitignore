@@ -16,6 +16,7 @@ t[e]?mp
 !.yarn/versions
 
 # File
+*.backup
 *.log
 *.sw*
 *.tmp
