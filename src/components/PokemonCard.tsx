@@ -3,11 +3,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import PokemonDetail from "@/components/PokemonDetail";
 import PromptCatchingPokemon from "@/components/PromptCatchingPokemon";
+import PromptReleasePokemon from "@/components/PromptReleasePokemon";
 import { Button, Container, Heading, useDisclosure } from "@chakra-ui/react";
 
-import { DBNAME, DBVERSION } from "@/config";
-
-import type { ColorProps, DOMEvent, Pokemon } from "@/config";
+import type { ColorProps, Pokemon } from "@/config";
 
 interface PropTypes {
   data: any;
@@ -30,28 +29,16 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     onClose: onCloseCatchPokemon,
     onOpen: onOpenCatchPokemon
   } = useDisclosure();
+  const {
+    isOpen: isOpenReleasePokemon,
+    onClose: onCloseReleasePokemon,
+    onOpen: onOpenReleasePokemon
+  } = useDisclosure();
   const [pokemon, setPokemon] = useState<Pokemon>({
     data: {},
     image: "",
     name: ""
   });
-
-  const releasePokemon = (pokemonID: string) => {
-    const idb = window.indexedDB.open(DBNAME, DBVERSION);
-    idb.onerror = (event: DOMEvent) => {
-      console.error("Failed to initDB", event.target.error);
-    };
-    idb.onsuccess = (event: DOMEvent) => {
-      const db = event.target.result;
-      let transaction = db.transaction("pokemon", "readwrite");
-      transaction.onerror = (event: any) => {
-        console.error("Error transaction", event.target);
-      };
-      let store = transaction.objectStore("pokemon");
-      store.delete(pokemonID);
-      props.update(!props.state);
-    };
-  };
 
   return (
     <>
@@ -148,7 +135,12 @@ const PokemonList = (props: ColorProps & PropTypes) => {
               color={props.color.contrast.color}
               marginBottom={2}
               onClick={() => {
-                releasePokemon(props.data.id);
+                onOpenReleasePokemon();
+                setPokemon({
+                  data: props.data,
+                  image: props.image,
+                  name: props.name
+                });
               }}
               padding={1}
               size="sm"
@@ -181,12 +173,22 @@ const PokemonList = (props: ColorProps & PropTypes) => {
           />
         </>
       ) : (
-        <PokemonDetail
-          color={props.color}
-          isOpen={isOpen}
-          onClose={onClose}
-          pokemon={pokemon}
-        />
+        <>
+          <PokemonDetail
+            color={props.color}
+            isOpen={isOpen}
+            onClose={onClose}
+            pokemon={pokemon}
+          />
+          <PromptReleasePokemon
+            color={props.color}
+            isOpen={isOpenReleasePokemon}
+            onClose={onCloseReleasePokemon}
+            pokemon={pokemon}
+            state={props.state}
+            update={props.update}
+          />
+        </>
       )}
     </>
   );

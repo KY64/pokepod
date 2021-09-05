@@ -1,6 +1,6 @@
 import React from "react";
 
-import Logo from "@/components/svg/Pokepod";
+import NextImage from "next/image";
 import NextLink from "next/link";
 import ToggleTheme from "@/components/ToggleTheme";
 import { Box, Button, HStack, SimpleGrid, Text } from "@chakra-ui/react";
@@ -56,7 +56,7 @@ const Desktop = (props: any) => (
         marginLeft={3}
         role="logo"
       >
-        <Logo width="120px" />
+        <NextImage height={40} src="/logo.png" width={140} />
       </Box>
     </NextLink>
     <Box justifySelf="end">
