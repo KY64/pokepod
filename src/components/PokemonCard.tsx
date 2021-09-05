@@ -34,6 +34,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
     onClose: onCloseReleasePokemon,
     onOpen: onOpenReleasePokemon
   } = useDisclosure();
+
   const [pokemon, setPokemon] = useState<Pokemon>({
     data: {},
     image: "",
@@ -141,6 +142,7 @@ const PokemonList = (props: ColorProps & PropTypes) => {
                   image: props.image,
                   name: props.name
                 });
+
               }}
               padding={1}
               size="sm"
